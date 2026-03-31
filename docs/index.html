@@ -2,217 +2,154 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#6366f1">
 <title>记忆属于小C</title>
-<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--primary:#6366f1;--primary-light:#818cf8;--bg:#0f0f23;--bg-card:#1a1a2e;--bg-input:#16213e;--text:#e2e8f0;--text-muted:#94a3b8;--border:#334155;--success:#10b981;--danger:#ef4444}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow:hidden}
+:root{--p:#6366f1;--pl:#818cf8;--bg:#0f0f23;--c:#1a1a2e;--i:#16213e;--t:#e2e8f0;--m:#94a3b8;--b:#334155;--g:#10b981;--d:#ef4444}
+body{font-family:-apple-system,sans-serif;background:var(--bg);color:var(--t);min-height:100vh}
 .app{display:flex;flex-direction:column;height:100vh}
-.header{background:linear-gradient(135deg,var(--primary),var(--primary-light));padding:16px 20px;text-align:center}
-.header h1{font-size:20px;font-weight:600}
-.header .sub{font-size:12px;opacity:.9;margin-top:4px}
+.hd{background:linear-gradient(135deg,var(--p),var(--pl));padding:16px 20px;text-align:center}
+.hd h1{font-size:20px}
+.hd div{font-size:12px;opacity:.9;margin-top:4px}
 .main{flex:1;overflow-y:auto;padding-bottom:70px}
-.page{display:none;height:100%}
-.page.active{display:block}
-.chat-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
-.msg{max-width:85%;padding:12px 16px;border-radius:18px;line-height:1.5;font-size:15px;animation:in .3s}
-@keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.msg.user{align-self:flex-end;background:linear-gradient(135deg,var(--primary),var(--primary-light));border-bottom-right-radius:4px}
-.msg.ai{align-self:flex-start;background:var(--bg-card);border:1px solid var(--border);border-bottom-left-radius:4px}
-.msg .t{font-size:11px;color:var(--text-muted);margin-top:6px;display:block}
-.typing{display:flex;gap:4px;padding:16px;align-self:flex-start}
-.typing span{width:8px;height:8px;background:var(--text-muted);border-radius:50%;animation:b 1.4s infinite}
-.typing span:nth-child(2){animation-delay:.2s}
-.typing span:nth-child(3){animation-delay:.4s}
-@keyframes b{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-10px)}}
-.input-box{background:var(--bg-card);border-top:1px solid var(--border);padding:12px 16px;display:flex;gap:12px;align-items:flex-end}
-.input{flex:1;background:var(--bg-input);border:1px solid var(--border);border-radius:24px;padding:12px 18px;color:var(--text);font-size:15px;resize:none;max-height:120px;outline:none}
-.input:focus{border-color:var(--primary)}
-.send{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary-light));border:none;color:#fff;font-size:20px;cursor:pointer}
-.send:disabled{opacity:.5}
-.mem-page{padding:16px}
-.search{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:10px}
-.search input{flex:1;background:none;border:none;color:var(--text);font-size:15px;outline:none}
-.cats{display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;padding-bottom:8px}
-.cat-btn{padding:8px 16px;border-radius:20px;border:1px solid var(--border);background:var(--bg-card);color:var(--text);font-size:13px;cursor:pointer;white-space:nowrap}
-.cat-btn.active{background:var(--primary);border-color:var(--primary)}
-.mem-list{display:flex;flex-direction:column;gap:12px}
-.mem-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:16px}
-.mem-card .tag{display:inline-block;padding:4px 10px;border-radius:12px;font-size:11px;font-weight:500;margin-bottom:8px}
-.mem-card .tag.work{background:#3b82f6}
-.mem-card .tag.study{background:#8b5cf6}
-.mem-card .tag.life{background:#10b981}
-.mem-card .tag.idea{background:#f59e0b}
-.mem-card .tag.fact{background:#ec4899}
-.mem-card .content{font-size:14px;line-height:1.6;margin-bottom:8px}
-.mem-card .meta{display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted)}
-.mem-card .acts{display:flex;gap:8px;margin-top:12px}
-.mem-card .act{padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg-input);color:var(--text);font-size:12px;cursor:pointer}
-.add-btn{position:fixed;bottom:80px;right:20px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--primary-light));border:none;color:#fff;font-size:28px;cursor:pointer;box-shadow:0 4px 15px rgba(99,102,241,.4);z-index:100}
-.set-page{padding:16px}
-.set-sec{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;margin-bottom:16px;overflow:hidden}
-.set-title{padding:14px 16px;font-size:13px;font-weight:600;color:var(--primary-light);border-bottom:1px solid var(--border);text-transform:uppercase}
-.set-item{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-.set-item:last-child{border-bottom:none}
-.set-item label{font-size:14px}
-.set-item input[type=text],.set-item input[type=password],.set-item input[type=url]{flex:1;max-width:200px;padding:8px 12px;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;outline:none}
-.set-item textarea{flex:1;max-width:200px;padding:8px 12px;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;outline:none;resize:vertical;min-height:60px}
-.toggle{position:relative;width:48px;height:26px}
-.toggle input{opacity:0;width:0;height:0}
-.slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:var(--bg-input);border-radius:26px;transition:.3s}
-.slider:before{position:absolute;content:"";height:20px;width:20px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s}
-.toggle input:checked+.slider{background:var(--primary)}
-.toggle input:checked+.slider:before{transform:translateX(22px)}
-.save-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--primary),var(--primary-light));border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:600;cursor:pointer;margin-top:8px}
-.nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg-card);border-top:1px solid var(--border);display:flex;justify-content:space-around;padding:8px 0;z-index:1000}
-.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;padding:8px;color:var(--text-muted);cursor:pointer}
-.nav-item.active{color:var(--primary-light)}
-.nav-item .icon{font-size:24px;margin-bottom:4px}
-.nav-item .label{font-size:11px}
-.modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);z-index:2000;align-items:center;justify-content:center;padding:20px}
-.modal.active{display:flex}
-.modal-box{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;width:100%;max-width:400px;max-height:80vh;overflow-y:auto}
-.modal-head{padding:16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-.modal-head h3{font-size:18px}
-.modal-close{background:none;border:none;color:var(--text-muted);font-size:24px;cursor:pointer}
-.modal-body{padding:16px}
-.form-gp{margin-bottom:16px}
-.form-gp label{display:block;font-size:13px;color:var(--text-muted);margin-bottom:6px}
-.form-gp input,.form-gp textarea,.form-gp select{width:100%;padding:10px 14px;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;outline:none}
-.form-gp textarea{min-height:100px;resize:vertical}
-.modal-foot{padding:16px;border-top:1px solid var(--border);display:flex;gap:12px}
-.btn{flex:1;padding:12px;border-radius:10px;border:none;font-size:14px;font-weight:500;cursor:pointer}
-.btn-pri{background:linear-gradient(135deg,var(--primary),var(--primary-light));color:#fff}
-.btn-sec{background:var(--bg-input);color:var(--text);border:1px solid var(--border)}
-.btn-del{background:var(--danger);color:#fff}
-.lock{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:3000;flex-direction:column;align-items:center;justify-content:center;padding:20px}
-.lock.active{display:flex}
-.lock-icon{font-size:64px;margin-bottom:24px}
-.lock-title{font-size:24px;margin-bottom:8px}
-.lock-sub{color:var(--text-muted);margin-bottom:24px}
-.lock-input{width:100%;max-width:300px;padding:14px 20px;background:var(--bg-input);border:2px solid var(--border);border-radius:12px;color:var(--text);font-size:16px;text-align:center;outline:none;margin-bottom:16px}
-.lock-btn{width:100%;max-width:300px;padding:14px;background:linear-gradient(135deg,var(--primary),var(--primary-light));border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:600;cursor:pointer}
-.lock-err{color:var(--danger);font-size:13px;margin-bottom:16px;display:none}
-.empty{text-align:center;padding:40px 20px;color:var(--text-muted)}
-.empty .icon{font-size:64px;margin-bottom:16px;opacity:.5}
-.empty .title{font-size:18px;color:var(--text);margin-bottom:8px}
-.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--bg-card);border:1px solid var(--border);padding:12px 24px;border-radius:8px;z-index:4000;opacity:0;transition:opacity .3s;pointer-events:none}
-.toast.show{opacity:1}
-.toast.ok{border-color:var(--success);color:var(--success)}
-.toast.err{border-color:var(--danger);color:var(--danger)}
+.pg{display:none;height:100%}
+.pg.act{display:block}
+.msgs{padding:16px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;height:100%}
+.msg{max-width:85%;padding:12px 16px;border-radius:18px;font-size:15px;line-height:1.5}
+.msg.u{align-self:flex-end;background:linear-gradient(135deg,var(--p),var(--pl));border-bottom-right-radius:4px}
+.msg.a{align-self:flex-start;background:var(--c);border:1px solid var(--b);border-bottom-left-radius:4px}
+.msg span{font-size:11px;color:var(--m);display:block;margin-top:6px}
+.inp{background:var(--c);border-top:1px solid var(--b);padding:12px 16px;display:flex;gap:12px;position:fixed;bottom:56px;left:0;right:0}
+.inp textarea{flex:1;background:var(--i);border:1px solid var(--b);border-radius:24px;padding:12px 18px;color:var(--t);font-size:15px;resize:none;max-height:100px;outline:none}
+.inp button{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--p),var(--pl));border:none;color:#fff;font-size:20px;cursor:pointer}
+.nav{position:fixed;bottom:0;left:0;right:0;background:var(--c);border-top:1px solid var(--b);display:flex;justify-content:space-around;padding:8px 0}
+.nv{flex:1;display:flex;flex-direction:column;align-items:center;padding:8px;color:var(--m);cursor:pointer}
+.nv.act{color:var(--pl)}
+.nv span:first-child{font-size:24px;margin-bottom:4px}
+.nv span:last-child{font-size:11px}
+.empty{text-align:center;padding:60px 20px;color:var(--m)}
+.empty div:first-child{font-size:48px;margin-bottom:16px}
+.empty div:nth-child(2){font-size:18px;color:var(--t);margin-bottom:8px}
+.set{padding:16px}
+.sec{background:var(--c);border:1px solid var(--b);border-radius:12px;margin-bottom:16px;overflow:hidden}
+.st{padding:14px 16px;font-size:12px;font-weight:600;color:var(--pl);border-bottom:1px solid var(--b);text-transform:uppercase}
+.si{padding:14px 16px;border-bottom:1px solid var(--b);display:flex;justify-content:space-between;align-items:center}
+.si:last-child{border-bottom:none}
+.si label{font-size:14px}
+.si input{width:180px;padding:8px 12px;background:var(--i);border:1px solid var(--b);border-radius:8px;color:var(--t);font-size:14px;outline:none}
+.si textarea{width:180px;padding:8px 12px;background:var(--i);border:1px solid var(--b);border-radius:8px;color:var(--t);font-size:14px;outline:none;min-height:60px}
+.tg{position:relative;width:48px;height:26px}
+.tg input{opacity:0}
+.sl{position:absolute;top:0;left:0;right:0;bottom:0;background:var(--i);border-radius:26px;transition:.3s}
+.sl:before{content:"";position:absolute;height:20px;width:20px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s}
+.tg input:checked+.sl{background:var(--p)}
+.tg input:checked+.sl:before{transform:translateX(22px)}
+.sv{width:100%;padding:14px;background:linear-gradient(135deg,var(--p),var(--pl));border:none;border-radius:12px;color:#fff;font-size:16px;cursor:pointer}
+.mem{padding:16px}
+.srch{background:var(--c);border:1px solid var(--b);border-radius:12px;padding:12px 16px;margin-bottom:16px;display:flex;gap:10px}
+.srch input{flex:1;background:none;border:none;color:var(--t);font-size:15px;outline:none}
+.cats{display:flex;gap:8px;margin-bottom:16px;overflow-x:auto}
+.ct{padding:8px 16px;border-radius:20px;border:1px solid var(--b);background:var(--c);color:var(--t);font-size:13px;cursor:pointer}
+.ct.act{background:var(--p);border-color:var(--p)}
+.ml{display:flex;flex-direction:column;gap:12px}
+.mc{background:var(--c);border:1px solid var(--b);border-radius:12px;padding:16px}
+.mc .tg{display:inline-block;padding:4px 10px;border-radius:12px;font-size:11px;margin-bottom:8px}
+.mc .tg.work{background:#3b82f6}
+.mc .tg.study{background:#8b5cf6}
+.mc .tg.life{background:#10b981}
+.mc .tg.idea{background:#f59e0b}
+.mc .tg.fact{background:#ec4899}
+.mc .cnt{font-size:14px;line-height:1.6;margin-bottom:8px}
+.mc .mt{display:flex;justify-content:space-between;font-size:12px;color:var(--m)}
+.mc .ac{display:flex;gap:8px;margin-top:12px}
+.mc button{padding:6px 12px;border-radius:8px;border:1px solid var(--b);background:var(--i);color:var(--t);font-size:12px;cursor:pointer}
+.add{position:fixed;bottom:80px;right:20px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--p),var(--pl));border:none;color:#fff;font-size:28px;cursor:pointer;box-shadow:0 4px 15px rgba(99,102,241,.4)}
+.md{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);z-index:100;align-items:center;justify-content:center;padding:20px}
+.md.act{display:flex}
+.mb{background:var(--c);border:1px solid var(--b);border-radius:16px;width:100%;max-width:400px}
+.mh{padding:16px;border-bottom:1px solid var(--b);display:flex;justify-content:space-between}
+.mh h3{font-size:18px}
+.mh button{background:none;border:none;color:var(--m);font-size:24px;cursor:pointer}
+.mbd{padding:16px}
+.fg{margin-bottom:16px}
+.fg label{display:block;font-size:13px;color:var(--m);margin-bottom:6px}
+.fg input,.fg textarea,.fg select{width:100%;padding:10px 14px;background:var(--i);border:1px solid var(--b);border-radius:8px;color:var(--t);font-size:14px;outline:none}
+.fg textarea{min-height:80px}
+.mf{padding:16px;border-top:1px solid var(--b);display:flex;gap:12px}
+.bt{flex:1;padding:12px;border-radius:10px;border:none;font-size:14px;cursor:pointer}
+.bt.p{background:linear-gradient(135deg,var(--p),var(--pl));color:#fff}
+.bt.s{background:var(--i);color:var(--t);border:1px solid var(--b)}
 </style>
 </head>
 <body>
-<div class="lock" id="lock">
-<div class="lock-icon">🔐</div>
-<div class="lock-title">记忆属于小C</div>
-<div class="lock-sub">请输入密码解锁</div>
-<input type="password" class="lock-input" id="lockPwd" placeholder="输入密码">
-<div class="lock-err" id="lockErr">密码错误</div>
-<button class="lock-btn" onclick="unlock()">解锁</button>
-</div>
 <div class="app">
-<div class="header"><h1 id="hdrTitle">和小C聊天</h1><div class="sub" id="hdrSub">AI 记忆助手</div></div>
+<div class="hd"><h1 id="ht">和小C聊天</h1><div id="hs">AI 记忆助手</div></div>
 <div class="main">
-<div class="page active" id="chatPage"><div class="chat-msgs" id="msgs"></div></div>
-<div class="page" id="memPage">
-<div class="mem-page">
-<div class="search"><span>🔍</span><input type="text" id="memSearch" placeholder="搜索记忆..." oninput="filterMems()"></div>
-<div class="cats" id="cats">
-<button class="cat-btn active" data-c="all">全部</button>
-<button class="cat-btn" data-c="work">工作</button>
-<button class="cat-btn" data-c="study">学习</button>
-<button class="cat-btn" data-c="life">生活</button>
-<button class="cat-btn" data-c="idea">创意</button>
-<button class="cat-btn" data-c="fact">事实</button>
+<div class="pg act" id="cp"><div class="msgs" id="ms"></div></div>
+<div class="pg" id="mp">
+<div class="mem">
+<div class="srch"><span>🔍</span><input id="sr" placeholder="搜索..." oninput="fM()"></div>
+<div class="cats" id="cs"><button class="ct act" data-c="all">全部</button><button class="ct" data-c="work">工作</button><button class="ct" data-c="study">学习</button><button class="ct" data-c="life">生活</button><button class="ct" data-c="idea">创意</button><button class="ct" data-c="fact">事实</button></div>
+<div class="ml" id="ml"></div>
 </div>
-<div class="mem-list" id="memList"></div>
+<button class="add" onclick="sA()">+</button>
 </div>
-<button class="add-btn" onclick="showAddMem()">+</button>
+<div class="pg" id="sp">
+<div class="set">
+<div class="sec"><div class="st">API 配置</div>
+<div class="si"><label>API 地址</label><input type="url" id="au" placeholder="https://api.openai.com/v1"></div>
+<div class="si"><label>API Key</label><input type="password" id="ak" placeholder="sk-..."></div>
+<div class="si"><label>模型</label><input type="text" id="mo" placeholder="gpt-3.5-turbo"></div>
 </div>
-<div class="page" id="setPage">
-<div class="set-page">
-<div class="set-sec"><div class="set-title">API 配置</div>
-<div class="set-item"><label>API 地址</label><input type="url" id="apiUrl" placeholder="https://api.openai.com/v1"></div>
-<div class="set-item"><label>API Key</label><input type="password" id="apiKey" placeholder="sk-..."></div>
-<div class="set-item"><label>模型</label><input type="text" id="model" placeholder="gpt-3.5-turbo"></div>
+<div class="sec"><div class="st">小C 人格</div>
+<div class="si"><label>称呼</label><input type="text" id="nm" placeholder="小C"></div>
+<div class="si" style="flex-direction:column;align-items:stretch"><label style="margin-bottom:8px">性格描述</label><textarea id="pr" placeholder="温柔体贴，善解人意..."></textarea></div>
 </div>
-<div class="set-sec"><div class="set-title">小C 人格</div>
-<div class="set-item"><label>称呼</label><input type="text" id="name" placeholder="小C"></div>
-<div class="set-item" style="flex-direction:column;align-items:stretch"><label style="margin-bottom:8px">性格描述</label><textarea id="personality" placeholder="温柔体贴，善解人意，有点俏皮..."></textarea></div>
+<div class="sec"><div class="st">记忆设置</div>
+<div class="si"><label>自动提取记忆</label><label class="tg"><input type="checkbox" id="ae" checked><span class="sl"></span></label></div>
+<div class="si"><label>搜索记忆回答</label><label class="tg"><input type="checkbox" id="sm" checked><span class="sl"></span></label></div>
 </div>
-<div class="set-sec"><div class="set-title">隐私设置</div>
-<div class="set-item"><label>启用密码保护</label><label class="toggle"><input type="checkbox" id="enPwd" onchange="togglePwd()"><span class="slider"></span></label></div>
-<div class="set-item" id="pwdItem" style="display:none"><label>设置密码</label><input type="password" id="pwd" placeholder="输入密码"></div>
+<div class="sec"><div class="st">数据管理</div>
+<div class="si"><label>导出数据</label><button onclick="exD()">导出</button></div>
+<div class="si"><label>清除所有数据</label><button style="color:var(--d)" onclick="clD()">清除</button></div>
 </div>
-<div class="set-sec"><div class="set-title">记忆设置</div>
-<div class="set-item"><label>自动提取记忆</label><label class="toggle"><input type="checkbox" id="autoExt" checked><span class="slider"></span></label></div>
-<div class="set-item"><label>搜索记忆回答</label><label class="toggle"><input type="checkbox" id="searchMem" checked><span class="slider"></span></label></div>
-</div>
-<div class="set-sec"><div class="set-title">数据管理</div>
-<div class="set-item"><label>导出数据</label><button class="act" onclick="exportData()">导出</button></div>
-<div class="set-item"><label>导入数据</label><button class="act" onclick="importData()">导入</button></div>
-<div class="set-item"><label>清除所有数据</label><button class="act" style="color:var(--danger)" onclick="clearData()">清除</button></div>
-</div>
-<button class="save-btn" onclick="saveSet()">保存设置</button>
+<button class="sv" onclick="svS()">保存设置</button>
 </div>
 </div>
 </div>
-<div class="input-box" id="inputBox">
-<textarea class="input" id="input" placeholder="和小C说点什么..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();send()}"></textarea>
-<button class="send" id="sendBtn" onclick="send()">➤</button>
+<div class="inp" id="ib">
+<textarea id="ti" placeholder="和小C说点什么..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sd()}"></textarea>
+<button onclick="sd()">➤</button>
 </div>
 <div class="nav">
-<div class="nav-item active" data-p="chat"><span class="icon">💬</span><span class="label">聊天</span></div>
-<div class="nav-item" data-p="mem"><span class="icon">🧠</span><span class="label">记忆</span></div>
-<div class="nav-item" data-p="set"><span class="icon">⚙️</span><span class="label">设置</span></div>
+<div class="nv act" data-p="cp"><span>💬</span><span>聊天</span></div>
+<div class="nv" data-p="mp"><span>🧠</span><span>记忆</span></div>
+<div class="nv" data-p="sp"><span>⚙️</span><span>设置</span></div>
 </div>
 </div>
-<div class="modal" id="addMemModal"><div class="modal-box"><div class="modal-head"><h3 id="memModalTitle">添加记忆</h3><button class="modal-close" onclick="closeAddMem()">×</button></div><div class="modal-body"><div class="form-gp"><label>分类</label><select id="memCat"><option value="work">工作</option><option value="study">学习</option><option value="life">生活</option><option value="idea">创意</option><option value="fact">事实</option></select></div><div class="form-gp"><label>内容</label><textarea id="memContent" placeholder="记录你想记住的内容..."></textarea></div></div><div class="modal-foot"><button class="btn btn-sec" onclick="closeAddMem()">取消</button><button class="btn btn-pri" onclick="saveMem()">保存</button></div></div></div>
-<div class="toast" id="toast"></div>
-<input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImport(event)">
+<div class="md" id="am"><div class="mb"><div class="mh"><h3 id="mt">添加记忆</h3><button onclick="cA()">×</button></div><div class="mbd"><div class="fg"><label>分类</label><select id="mc"><option value="work">工作</option><option value="study">学习</option><option value="life">生活</option><option value="idea">创意</option><option value="fact">事实</option></select></div><div class="fg"><label>内容</label><textarea id="mc2" placeholder="记录你想记住的内容..."></textarea></div></div><div class="mf"><button class="bt s" onclick="cA()">取消</button><button class="bt p" onclick="svM()">保存</button></div></div></div>
 <script>
-let S={page:'chat',msgs:[],mems:[],set:{apiUrl:'https://api.openai.com/v1',apiKey:'',model:'gpt-3.5-turbo',name:'小C',personality:'温柔体贴，善解人意，有点俏皮，喜欢用可爱的语气说话。',enPwd:false,pwd:'',autoExt:true,searchMem:true},editId:null,unlocked:false};
-function init(){loadS();checkPwd();setupNav();renderMsgs();renderMems();loadSetUI()}
-function loadS(){try{let s=localStorage.getItem('xiaoc');if(s)S={...S,...JSON.parse(s)}}catch(e){}}
-function saveS(){try{localStorage.setItem('xiaoc',JSON.stringify(S))}catch(e){}}
-function checkPwd(){if(S.set.enPwd&&!S.unlocked){document.getElementById('lock').classList.add('active')}else{document.getElementById('lock').classList.remove('active')}}
-function unlock(){if(document.getElementById('lockPwd').value===S.set.pwd){S.unlocked=true;document.getElementById('lock').classList.remove('active');document.getElementById('lockPwd').value='';document.getElementById('lockErr').style.display='none'}else{document.getElementById('lockErr').style.display='block'}}
-function setupNav(){document.querySelectorAll('.nav-item').forEach(i=>{i.onclick=()=>{let p=i.dataset.p;S.page=p;document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.dataset.p===p));document.querySelectorAll('.page').forEach(pg=>pg.classList.remove('active'));document.getElementById(p+'Page').classList.add('active');let titles={chat:'和小C聊天',mem:'记忆库',set:'设置'};document.getElementById('hdrTitle').textContent=titles[p];document.getElementById('inputBox').style.display=p==='chat'?'flex':'none'}})}
-function renderMsgs(){let c=document.getElementById('msgs');if(S.msgs.length===0){c.innerHTML='<div class="empty"><div class="icon">💭</div><div class="title">开始和小C聊天吧</div><div>我会记住重要的内容</div></div>';return}c.innerHTML=S.msgs.map(m=>'<div class="msg '+m.role+'">'+esc(m.content)+'<span class="t">'+fmtT(m.ts)+'</span></div>').join('');c.scrollTop=c.scrollHeight}
-async function send(){let txt=document.getElementById('input').value.trim();if(!txt)return;if(!S.set.apiKey){toast('请先配置 API Key','err');return}S.msgs.push({role:'user',content:txt,ts:Date.now()});document.getElementById('input').value='';renderMsgs();showTyping();document.getElementById('sendBtn').disabled=true;try{let sys=buildSys();if(S.set.searchMem&&/你还记得|记得吗|是不是说过|告诉过你/.test(txt)){let rel=S.mems.filter(m=>m.content.toLowerCase().includes(txt.toLowerCase())).slice(0,5);if(rel.length)sys+='\n\n相关记忆：\n'+rel.map(m=>'- ['+catLbl(m.cat)+'] '+m.content).join('\n')}let r=await fetch(S.set.apiUrl+'/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+S.set.apiKey},body:JSON.stringify({model:S.set.model,messages:[{role:'system',content:sys},...S.msgs.slice(-10).map(m=>({role:m.role,content:m.content}))],temperature:.8,max_tokens:1000})});if(!r.ok)throw new Error('API Error '+r.status);let d=await r.json();hideTyping();S.msgs.push({role:'ai',content:d.choices[0].message.content,ts:Date.now()});if(S.set.autoExt)extractMem(txt);saveS();renderMsgs()}catch(e){hideTyping();toast('发送失败: '+e.message,'err')}document.getElementById('sendBtn').disabled=false}
-function buildSys(){let n=S.set.name||'小C',p=S.set.personality||'温柔体贴';return '你是'+n+'，一个AI记忆助手。\n\n关于你：\n'+p+'\n\n你的能力：\n1. 和用户聊天，记住重要的事情\n2. 用户问你"你还记得..."时，会自动搜索记忆\n3. 自动从对话中提取重要信息作为记忆\n\n回复风格：自然、亲切、像朋友一样'}
-function extractMem(txt){let kws=['喜欢','讨厌','重要','记住','记得','别忘了','提醒我','计划','目标','生日'];if(kws.some(k=>txt.includes(k))){S.mems.push({id:Date.now(),cat:guessCat(txt),content:txt,src:'chat',ts:Date.now()});saveS();renderMems()}}
-function guessCat(t){if(/工作|项目|会议|客户|老板|加班/.test(t))return'work';if(/学习|考试|课程|书|研究/.test(t))return'study';if(/生活|吃饭|睡觉|运动|旅行|朋友/.test(t))return'life';if(/想法|创意|点子|计划|梦想/.test(t))return'idea';return'fact'}
-function showTyping(){let c=document.getElementById('msgs');let d=document.createElement('div');d.className='typing';d.id='typing';d.innerHTML='<span></span><span></span><span></span>';c.appendChild(d);c.scrollTop=c.scrollHeight}
-function hideTyping(){let t=document.getElementById('typing');if(t)t.remove()}
-function renderMems(){let c=document.getElementById('memList');let s=document.getElementById('memSearch').value.toLowerCase();let cat=document.querySelector('.cat-btn.active').dataset.c;let f=S.mems;if(cat!=='all')f=f.filter(m=>m.cat===cat);if(s)f=f.filter(m=>m.content.toLowerCase().includes(s));if(f.length===0){c.innerHTML='<div class="empty"><div class="icon">📝</div><div class="title">还没有记忆</div><div>点击 + 添加</div></div>';return}c.innerHTML=f.map(m=>'<div class="mem-card"><span class="tag '+m.cat+'">'+catLbl(m.cat)+'</span><div class="content">'+esc(m.content)+'</div><div class="meta"><span>'+fmtD(m.ts)+'</span><span>'+(m.src==='chat'?'来自对话':'手动')+'</span></div><div class="acts"><button class="act" onclick="editMem('+m.id+')">编辑</button><button class="act" style="color:var(--danger)" onclick="delMem('+m.id+')">删除</button></div></div>').join('')}
-function catLbl(c){return{work:'工作',study:'学习',life:'生活',idea:'创意',fact:'事实'}[c]||c}
-function filterMems(){renderMems()}
-document.querySelectorAll('.cat-btn').forEach(b=>{b.onclick=()=>{document.querySelectorAll('.cat-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');filterMems()}});
-function showAddMem(){S.editId=null;document.getElementById('memModalTitle').textContent='添加记忆';document.getElementById('memCat').value='life';document.getElementById('memContent').value='';document.getElementById('addMemModal').classList.add('active')}
-function closeAddMem(){document.getElementById('addMemModal').classList.remove('active')}
-function saveMem(){let cat=document.getElementById('memCat').value;let content=document.getElementById('memContent').value.trim();if(!content){toast('请输入内容','err');return}if(S.editId){let m=S.mems.find(x=>x.id===S.editId);if(m){m.cat=cat;m.content=content}}else{S.mems.push({id:Date.now(),cat:cat,content:content,src:'manual',ts:Date.now()})}saveS();renderMems();closeAddMem();toast('已保存','ok')}
-function editMem(id){let m=S.mems.find(x=>x.id===id);if(!m)return;S.editId=id;document.getElementById('memModalTitle').textContent='编辑记忆';document.getElementById('memCat').value=m.cat;document.getElementById('memContent').value=m.content;document.getElementById('addMemModal').classList.add('active')}
-function delMem(id){if(!confirm('确定删除？'))return;S.mems=S.mems.filter(m=>m.id!==id);saveS();renderMems();toast('已删除','ok')}
-function loadSetUI(){document.getElementById('apiUrl').value=S.set.apiUrl||'';document.getElementById('apiKey').value=S.set.apiKey||'';document.getElementById('model').value=S.set.model||'';document.getElementById('name').value=S.set.name||'';document.getElementById('personality').value=S.set.personality||'';document.getElementById('enPwd').checked=S.set.enPwd||false;document.getElementById('pwd').value=S.set.pwd||'';document.getElementById('autoExt').checked=S.set.autoExt!==false;document.getElementById('searchMem').checked=S.set.searchMem!==false;togglePwd()}
-function saveSet(){S.set={apiUrl:document.getElementById('apiUrl').value,apiKey:document.getElementById('apiKey').value,model:document.getElementById('model').value||'gpt-3.5-turbo',name:document.getElementById('name').value||'小C',personality:document.getElementById('personality').value,enPwd:document.getElementById('enPwd').checked,pwd:document.getElementById('pwd').value,autoExt:document.getElementById('autoExt').checked,searchMem:document.getElementById('searchMem').checked};saveS();toast('已保存','ok')}
-function togglePwd(){document.getElementById('pwdItem').style.display=document.getElementById('enPwd').checked?'flex':'none'}
-function exportData(){let d={version:1,exportedAt:new Date().toISOString(),set:S.set,mems:S.mems,msgs:S.msgs};let b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='xiaoc-backup-'+new Date().toISOString().split('T')[0]+'.json';a.click();toast('已导出','ok')}
-function importData(){document.getElementById('importFile').click()}
-function handleImport(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=ev=>{try{let d=JSON.parse(ev.target.result);if(d.set)S.set={...S.set,...d.set};if(d.mems)S.mems=d.mems;if(d.msgs)S.msgs=d.msgs;saveS();loadSetUI();renderMsgs();renderMems();toast('已导入','ok')}catch(err){toast('导入失败','err')}};r.readAsText(f);e.target.value=''}
-function clearData(){if(!confirm('确定清除所有数据？'))return;if(!confirm('真的确定？所有数据将丢失！'))return;localStorage.removeItem('xiaoc');S={page:'chat',msgs:[],mems:[],set:{apiUrl:'https://api.openai.com/v1',apiKey:'',model:'gpt-3.5-turbo',name:'小C',personality:'温柔体贴，善解人意，有点俏皮，喜欢用可爱的语气说话。',enPwd:false,pwd:'',autoExt:true,searchMem:true},editId:null,unlocked:false};loadSetUI();renderMsgs();renderMems();toast('已清除','ok')}
-function esc(t){let d=document.createElement('div');d.textContent=t;return d.innerHTML}
-function fmtT(ts){let d=new Date(ts);return d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0')}
-function fmtD(ts){let d=new Date(ts);return d.getFullYear()+'/'+(d.getMonth()+1).toString().padStart(2,'0')+'/'+d.getDate().toString().padStart(2,'0')}
-function toast(msg,type){let t=document.getElementById('toast');t.textContent=msg;t.className='toast show '+(type==='ok'?'ok':'err');setTimeout(()=>t.classList.remove('show'),3000)}
-document.getElementById('lockPwd').onkeydown=e=>{if(e.key==='Enter')unlock()};
-document.getElementById('input').oninput=function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px'};
+var S={pg:'cp',ms:[],mm:[],st:{au:'https://api.openai.com/v1',ak:'',mo:'gpt-3.5-turbo',nm:'小C',pr:'温柔体贴，善解人意，有点俏皮',ae:true,sm:true},eid:null};
+function init(){var s=localStorage.getItem('xc');if(s)S=JSON.parse(s);rM();rL();lS();document.querySelectorAll('.nv').forEach(function(n){n.onclick=function(){var p=this.dataset.p;S.pg=p;document.querySelectorAll('.nv').forEach(function(x){x.classList.toggle('act',x.dataset.p===p)});document.querySelectorAll('.pg').forEach(function(x){x.classList.remove('act')});document.getElementById(p).classList.add('act');var t={cp:'和小C聊天',mp:'记忆库',sp:'设置'};document.getElementById('ht').textContent=t[p];document.getElementById('ib').style.display=p==='cp'?'flex':'none'}});document.querySelectorAll('.ct').forEach(function(c){c.onclick=function(){document.querySelectorAll('.ct').forEach(function(x){x.classList.remove('act')});this.classList.add('act');fM()}})}
+function svS(){localStorage.setItem('xc',JSON.stringify(S))}
+function rM(){var c=document.getElementById('ms');if(S.ms.length===0){c.innerHTML='<div class="empty"><div>💭</div><div>开始和小C聊天吧</div><div>我会记住重要的内容</div></div>';return}c.innerHTML=S.ms.map(function(m){return'<div class="msg '+(m.r==='u'?'u':'a')+'">'+m.c.replace(/</g,'&lt;')+'<span>'+fmt(m.t)+'</span></div>'}).join('');c.scrollTop=c.scrollHeight}
+function fmt(t){var d=new Date(t);return d.getHours()+':'+String(d.getMinutes()).padStart(2,'0')}
+async function sd(){var t=document.getElementById('ti').value.trim();if(!t)return;if(!S.st.ak){alert('请先在设置中配置 API Key');return}S.ms.push({r:'u',c:t,t:Date.now()});document.getElementById('ti').value='';rM();document.getElementById('ti').disabled=true;try{var sys='你是'+(S.st.nm||'小C')+'，一个AI记忆助手。\n关于你：'+(S.st.pr||'温柔体贴')+'\n回复风格：自然、亲切、像朋友一样。';var body={model:S.st.mo,messages:[{role:'system',content:sys}],messages:S.ms.slice(-10).map(function(m){return{role:m.r==='u'?'user':'assistant',content:m.c}}),temperature:.8};var r=await fetch(S.st.au+'/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+S.st.ak},body:JSON.stringify(body)});var d=await r.json();S.ms.push({r:'a',c:d.choices[0].message.content,t:Date.now()});if(S.st.ae)extM(t);svS();rM()}catch(e){alert('发送失败: '+e.message)}document.getElementById('ti').disabled=false}
+function extM(t){var k=['喜欢','讨厌','重要','记住','记得','计划','目标','生日'];if(k.some(function(x){return t.includes(x)})){S.mm.push({id:Date.now(),c:guessC(t),cnt:t,src:'chat',t:Date.now()});svS();rL()}}
+function guessC(t){if(/工作|项目|会议|客户/.test(t))return'work';if(/学习|考试|课程|书/.test(t))return'study';if(/生活|吃饭|运动|旅行/.test(t))return'life';if(/想法|创意|点子|计划/.test(t))return'idea';return'fact'}
+function rL(){var c=document.getElementById('ml');var s=document.getElementById('sr').value.toLowerCase();var ct=document.querySelector('.ct.act').dataset.c;var f=S.mm;if(ct!=='all')f=f.filter(function(m){return m.c===ct});if(s)f=f.filter(function(m){return m.cnt.toLowerCase().includes(s)});if(f.length===0){c.innerHTML='<div class="empty"><div>📝</div><div>还没有记忆</div><div>点击 + 添加</div></div>';return}var lb={work:'工作',study:'学习',life:'生活',idea:'创意',fact:'事实'};c.innerHTML=f.map(function(m){return'<div class="mc"><span class="tg '+m.c+'">'+lb[m.c]+'</span><div class="cnt">'+m.cnt.replace(/</g,'&lt;')+'</div><div class="mt"><span>'+new Date(m.t).toLocaleDateString()+'</span><span>'+(m.src==='chat'?'来自对话':'手动')+'</span></div><div class="ac"><button onclick="eM('+m.id+')">编辑</button><button style="color:var(--d)" onclick="dM('+m.id+')">删除</button></div></div>'}).join('')}
+function fM(){rL()}
+function sA(){S.eid=null;document.getElementById('mt').textContent='添加记忆';document.getElementById('mc').value='life';document.getElementById('mc2').value='';document.getElementById('am').classList.add('act')}
+function cA(){document.getElementById('am').classList.remove('act')}
+function svM(){var c=document.getElementById('mc').value;var t=document.getElementById('mc2').value.trim();if(!t){alert('请输入内容');return}if(S.eid){var m=S.mm.find(function(x){return x.id===S.eid});if(m){m.c=c;m.cnt=t}}else{S.mm.push({id:Date.now(),c:c,cnt:t,src:'manual',t:Date.now()})}svS();rL();cA()}
+function eM(id){var m=S.mm.find(function(x){return x.id===id});if(!m)return;S.eid=id;document.getElementById('mt').textContent='编辑记忆';document.getElementById('mc').value=m.c;document.getElementById('mc2').value=m.cnt;document.getElementById('am').classList.add('act')}
+function dM(id){if(!confirm('确定删除？'))return;S.mm=S.mm.filter(function(m){return m.id!==id});svS();rL()}
+function lS(){document.getElementById('au').value=S.st.au||'';document.getElementById('ak').value=S.st.ak||'';document.getElementById('mo').value=S.st.mo||'';document.getElementById('nm').value=S.st.nm||'';document.getElementById('pr').value=S.st.pr||'';document.getElementById('ae').checked=S.st.ae!==false;document.getElementById('sm').checked=S.st.sm!==false}
+function svS(){S.st.au=document.getElementById('au').value;S.st.ak=document.getElementById('ak').value;S.st.mo=document.getElementById('mo').value||'gpt-3.5-turbo';S.st.nm=document.getElementById('nm').value||'小C';S.st.pr=document.getElementById('pr').value;S.st.ae=document.getElementById('ae').checked;S.st.sm=document.getElementById('sm').checked;localStorage.setItem('xc',JSON.stringify(S));alert('已保存')}
+function exD(){var d=JSON.stringify({st:S.st,mm:S.mm,ms:S.ms},null,2);var b=new Blob([d],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='xiaoc-backup.json';a.click()}
+function clD(){if(!confirm('确定清除所有数据？'))return;localStorage.removeItem('xc');S={pg:'cp',ms:[],mm:[],st:{au:'https://api.openai.com/v1',ak:'',mo:'gpt-3.5-turbo',nm:'小C',pr:'温柔体贴',ae:true,sm:true},eid:null};lS();rM();rL()}
 init();
 </script>
 </body>
